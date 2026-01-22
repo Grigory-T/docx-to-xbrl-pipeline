@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.Python
+venv/
+env/
+ENV/
+
+# Output files
+out/
+*.xbrl
+*.json
+*.txt
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test DOCX (keep template)
+# templates/report.docx will be kept in git

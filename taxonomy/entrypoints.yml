@@ -1,0 +1,71 @@
+# Taxonomy Entrypoints Configuration
+# Упрощенная конфигурация для GRI ESG taxonomy
+
+taxonomy:
+  name: "GRI ESG Taxonomy (Simplified)"
+  version: "1.0"
+  description: "Упрощенная версия GRI taxonomy для тестирования DOCX→XBRL pipeline"
+  
+entrypoint:
+  # В реальном проекте это будет ссылка на реальный taxonomy schema
+  # Например: http://www.globalreporting.org/taxonomy/2023-01-01/gri.xsd
+  href: "http://www.example.com/taxonomy/gri-simplified-2025.xsd"
+  namespace: "http://www.globalreporting.org/taxonomy/2025-01-01"
+  prefix: "gri"
+  
+# Для тестирования используем упрощенную версию
+# В production это должно указывать на официальные GRI taxonomy packages
+  
+namespaces:
+  xbrli: "http://www.xbrl.org/2003/instance"
+  xbrldi: "http://xbrl.org/2006/xbrldi"
+  link: "http://www.xbrl.org/2003/linkbase"
+  xlink: "http://www.w3.org/1999/xlink"
+  iso4217: "http://www.xbrl.org/2003/iso4217"
+  gri: "http://www.globalreporting.org/taxonomy/2025-01-01"
+  
+# Минимальный набор концептов для тестирования
+concepts:
+  - name: "EconomicPerformanceRevenue"
+    type: "monetaryItemType"
+    period: "duration"
+    balance: "credit"
+    
+  - name: "OperatingCosts"
+    type: "monetaryItemType"
+    period: "duration"
+    balance: "debit"
+    
+  - name: "NetProfit"
+    type: "monetaryItemType"
+    period: "duration"
+    balance: "credit"
+    
+  - name: "EmployeesTotal"
+    type: "integerItemType"
+    period: "instant"
+    
+  - name: "EmployeesFemale"
+    type: "integerItemType"
+    period: "instant"
+    
+  - name: "ReportDate"
+    type: "dateItemType"
+    period: "instant"
+    
+  - name: "EntityName"
+    type: "stringItemType"
+    period: "instant"
+    
+  - name: "EnergyConsumption"
+    type: "decimalItemType"
+    period: "duration"
+    
+  - name: "CO2Emissions"
+    type: "decimalItemType"
+    period: "duration"
+
+# Notes:
+# - Для production использовать официальные taxonomy packages от GRI
+# - Можно использовать taxonomy mapping для других стандартов (IFRS, ESRS и т.д.)
+# - В реальном проекте taxonomy должна быть загружена локально или через taxonomy cache

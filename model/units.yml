@@ -1,0 +1,28 @@
+# XBRL Unit Definitions
+# Units определяют единицы измерения для числовых фактов
+
+units:
+  # Валюты
+  unit_EUR:
+    id: unit_EUR
+    measure: "iso4217:EUR"
+  
+  unit_USD:
+    id: unit_USD
+    measure: "iso4217:USD"
+  
+  unit_RUB:
+    id: unit_RUB
+    measure: "iso4217:RUB"
+  
+  # Проценты
+  unit_pure:
+    id: unit_pure
+    measure: "xbrli:pure"
+    description: "Pure number (for percentages, ratios, etc.)"
+  
+  # Количество сотрудников (shares/units)
+  unit_shares:
+    id: unit_shares
+    measure: "xbrli:shares"
+    description: "For employee counts, number of shares, etc."

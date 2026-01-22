@@ -1,0 +1,49 @@
+# XBRL Context Definitions
+# Contexts определяют период и entity для фактов
+
+contexts:
+  # Instant context - точка во времени (конец периода)
+  ctx_2025_instant:
+    id: ctx_2025_instant
+    entity:
+      identifier:
+        scheme: "http://www.example.com/entities"
+        value: "TEST_COMPANY_001"
+    period:
+      type: instant
+      instant: "2025-12-31"
+  
+  # Duration context - период времени (весь год)
+  ctx_2025_duration:
+    id: ctx_2025_duration
+    entity:
+      identifier:
+        scheme: "http://www.example.com/entities"
+        value: "TEST_COMPANY_001"
+    period:
+      type: duration
+      startDate: "2025-01-01"
+      endDate: "2025-12-31"
+  
+  # Instant context для 2024 (сравнительные данные)
+  ctx_2024_instant:
+    id: ctx_2024_instant
+    entity:
+      identifier:
+        scheme: "http://www.example.com/entities"
+        value: "TEST_COMPANY_001"
+    period:
+      type: instant
+      instant: "2024-12-31"
+  
+  # Duration context для 2024
+  ctx_2024_duration:
+    id: ctx_2024_duration
+    entity:
+      identifier:
+        scheme: "http://www.example.com/entities"
+        value: "TEST_COMPANY_001"
+    period:
+      type: duration
+      startDate: "2024-01-01"
+      endDate: "2024-12-31"

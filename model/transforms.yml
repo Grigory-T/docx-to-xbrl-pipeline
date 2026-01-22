@@ -1,0 +1,141 @@
+# Transformation Registry Whitelist
+# Допустимые трансформации для нормализации значений
+# Основано на XBRL Transformation Registry 3+
+
+transforms:
+  # Числовые форматы
+  
+  ixt:num-dot-decimal:
+    description: "Число с точкой как разделитель дробной части и опциональными запятыми для тысяч"
+    examples:
+      - input: "1,234.56"
+        output: "1234.56"
+      - input: "1234.56"
+        output: "1234.56"
+      - input: "1,234,567.89"
+        output: "1234567.89"
+    pattern: "^[\\d\\s,]+\\.?\\d*$"
+    implementation: |
+      # Удалить все пробелы и запятые
+      # Точка остается как decimal separator
+      value.replace(' ', '').replace(',', '')
+  
+  ixt:num-comma-decimal:
+    description: "Число с запятой как разделитель дробной части (европейский формат)"
+    examples:
+      - input: "1 234,56"
+        output: "1234.56"
+      - input: "1.234,56"
+        output: "1234.56"
+      - input: "1234,56"
+        output: "1234.56"
+    pattern: "^[\\d\\s\\.]+,?\\d*$"
+    implementation: |
+      # Удалить все пробелы и точки (разделители тысяч)
+      # Заменить запятую на точку
+      value.replace(' ', '').replace('.', '').replace(',', '.')
+  
+  ixt:num-unit-decimal:
+    description: "Число с единицей измерения в конце (EUR, USD, etc.)"
+    examples:
+      - input: "1 234 567,89 EUR"
+        output: "1234567.89"
+      - input: "1,234.56 USD"
+        output: "1234.56"
+    pattern: "^[\\d\\s,\\.]+\\s*[A-Z]{3}$"
+    implementation: |
+      # Удалить единицу измерения в конце
+      # Применить соответствующую числовую трансформацию
+  
+  # Форматы дат
+  
+  ixt:date-day-month-year:
+    description: "Дата в формате DD.MM.YYYY → YYYY-MM-DD"
+    examples:
+      - input: "31.12.2025"
+        output: "2025-12-31"
+      - input: "01.01.2025"
+        output: "2025-01-01"
+    pattern: "^\\d{2}\\.\\d{2}\\.\\d{4}$"
+    implementation: |
+      # Parse DD.MM.YYYY
+      # Return YYYY-MM-DD
+  
+  ixt:date-day-month-year-slash:
+    description: "Дата в формате DD/MM/YYYY → YYYY-MM-DD"
+    examples:
+      - input: "31/12/2025"
+        output: "2025-12-31"
+    pattern: "^\\d{2}/\\d{2}/\\d{4}$"
+  
+  ixt:date-month-day-year:
+    description: "Дата в формате MM/DD/YYYY → YYYY-MM-DD (US format)"
+    examples:
+      - input: "12/31/2025"
+        output: "2025-12-31"
+    pattern: "^\\d{2}/\\d{2}/\\d{4}$"
+  
+  ixt:date-day-monthname-year-ru:
+    description: "Дата с названием месяца на русском"
+    examples:
+      - input: "31 декабря 2025"
+        output: "2025-12-31"
+      - input: "1 января 2025"
+        output: "2025-01-01"
+    pattern: "^\\d{1,2}\\s+[а-яА-Я]+\\s+\\d{4}$"
+  
+  # Булевые значения
+  
+  ixt:boolean-true:
+    description: "Булевое значение TRUE"
+    examples:
+      - input: "true"
+        output: "true"
+      - input: "TRUE"
+        output: "true"
+      - input: "да"
+        output: "true"
+      - input: "yes"
+        output: "true"
+      - input: "1"
+        output: "true"
+    values: ["true", "TRUE", "True", "да", "Да", "yes", "Yes", "1"]
+  
+  ixt:boolean-false:
+    description: "Булевое значение FALSE"
+    examples:
+      - input: "false"
+        output: "false"
+      - input: "FALSE"
+        output: "false"
+      - input: "нет"
+        output: "false"
+      - input: "no"
+        output: "false"
+      - input: "0"
+        output: "false"
+    values: ["false", "FALSE", "False", "нет", "Нет", "no", "No", "0"]
+  
+  # Процентные значения
+  
+  ixt:percent-to-decimal:
+    description: "Процент в десятичную дробь (12.5% → 0.125)"
+    examples:
+      - input: "12.5%"
+        output: "0.125"
+      - input: "100%"
+        output: "1.0"
+    pattern: "^\\d+(\\.\\d+)?\\s*%$"
+    implementation: |
+      # Remove %, divide by 100
+  
+  # Текстовые нормализации
+  
+  ixt:normalize-space:
+    description: "Нормализация пробелов (удаление лишних, trim)"
+    examples:
+      - input: "  Test  Company  "
+        output: "Test Company"
+    implementation: |
+      # Strip and collapse multiple spaces
+      ' '.join(value.split())
