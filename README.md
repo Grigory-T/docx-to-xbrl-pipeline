@@ -19,7 +19,7 @@ python -m venv venv
 # Install dependencies
 pip install -r requirements.txt
 
-# Extract GRI taxonomy
+# Extract GRI taxonomy (the repo already includes `gri-sustainability-taxonomy.zip`)
 python scripts/setup_taxonomy.py
 ```
 
@@ -33,7 +33,14 @@ python tools/create_test_docx.py
 python scripts/run_pipeline.py templates/report.docx
 
 # Output: out/report.xbrl
+ 
+# Validate with Arelle CLI (invoked automatically by the pipeline as well)
+python scripts/validate_arelle.py out/report.xbrl --output out/validation.txt
 ```
+
+## Taxonomy
+
+The repository now ships with `gri-sustainability-taxonomy.zip`. Run `python scripts/setup_taxonomy.py` once to extract it into `taxonomy_cache/`; both `scripts/run_pipeline.py` and Arelle will resolve the schema to the extracted `entry_point_2025-06-23.xsd`.
 
 ## Content Controls Setup
 
