@@ -23,9 +23,6 @@ out/*.txt
 # Taxonomy cache (extracted from zip)
 taxonomy_cache/
 
-# GRI Taxonomy zip (not included in repo - download separately)
-gri-sustainability-taxonomy.zip
-
 # IDE
 .vscode/
 .idea/

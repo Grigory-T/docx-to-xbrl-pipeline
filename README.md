@@ -19,7 +19,7 @@ python -m venv venv
 # Install dependencies
 pip install -r requirements.txt
 
-# Extract GRI taxonomy (place gri-sustainability-taxonomy.zip in root first)
+# Extract GRI taxonomy
 python scripts/setup_taxonomy.py
 ```
 
