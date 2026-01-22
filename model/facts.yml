@@ -4,98 +4,99 @@
 facts:
   # Финансовые показатели
   revenue_2025:
-    concept: "gri:EconomicPerformanceRevenue"
+    concept: "gri:RevenuesGeneratedFromDirectEconomicValue"
     type: monetary
     contextRef: ctx_2025_duration
     unitRef: unit_EUR
     decimals: "0"
     transform: ixt:num-comma-decimal
-    description: "Выручка за 2025 год"
+    description: "Revenues for 2025"
   
   revenue_2024:
-    concept: "gri:EconomicPerformanceRevenue"
+    concept: "gri:RevenuesGeneratedFromDirectEconomicValue"
     type: monetary
     contextRef: ctx_2024_duration
     unitRef: unit_EUR
     decimals: "0"
     transform: ixt:num-comma-decimal
-    description: "Выручка за 2024 год (сравнительные данные)"
+    description: "Revenues for 2024 (comparative)"
   
   operating_costs_2025:
-    concept: "gri:OperatingCosts"
+    concept: "gri:EconomicValueDistributed"
     type: monetary
     contextRef: ctx_2025_duration
     unitRef: unit_EUR
     decimals: "0"
     transform: ixt:num-comma-decimal
-    description: "Операционные расходы 2025"
+    description: "Operating costs 2025"
   
   net_profit_2025:
-    concept: "gri:NetProfit"
+    concept: "gri:EconomicValueRetained"
     type: monetary
     contextRef: ctx_2025_duration
     unitRef: unit_EUR
     decimals: "0"
     transform: ixt:num-comma-decimal
-    description: "Чистая прибыль 2025"
+    description: "Net profit 2025"
   
   # Сотрудники
   employees_2025:
-    concept: "gri:EmployeesTotal"
-    type: integer
-    contextRef: ctx_2025_instant
-    unitRef: unit_shares
+    concept: "gri:TotalNumberOfEmployees"
+    type: decimal
+    contextRef: ctx_2025_duration
+    unitRef: unit_pure
     decimals: "0"
     transform: ixt:num-dot-decimal
-    description: "Общее количество сотрудников на конец 2025"
+    description: "Total employees 2025"
   
   employees_2024:
-    concept: "gri:EmployeesTotal"
-    type: integer
-    contextRef: ctx_2024_instant
-    unitRef: unit_shares
+    concept: "gri:TotalNumberOfEmployees"
+    type: decimal
+    contextRef: ctx_2024_duration
+    unitRef: unit_pure
     decimals: "0"
     transform: ixt:num-dot-decimal
-    description: "Общее количество сотрудников на конец 2024"
+    description: "Total employees 2024"
   
   employees_female_2025:
-    concept: "gri:EmployeesFemale"
-    type: integer
-    contextRef: ctx_2025_instant
-    unitRef: unit_shares
+    concept: "gri:TotalNumberOfEmployees"
+    type: decimal
+    contextRef: ctx_2025_duration
+    unitRef: unit_pure
     decimals: "0"
     transform: ixt:num-dot-decimal
-    description: "Количество сотрудников женского пола"
+    description: "Female employees"
   
-  # Даты и текстовые поля
+  # Dates and text fields
   report_date:
-    concept: "gri:ReportDate"
-    type: date
-    contextRef: ctx_2025_instant
-    transform: ixt:date-day-month-year
-    description: "Дата составления отчета"
+    concept: "gri:GRICompanyIdentifierNumber"
+    type: string
+    contextRef: ctx_2025_duration
+    transform: ixt:normalize-space
+    description: "Report date"
   
   company_name:
-    concept: "gri:EntityName"
+    concept: "gri:GRICompanyIdentifierNumber"
     type: string
-    contextRef: ctx_2025_instant
-    description: "Название компании"
+    contextRef: ctx_2025_duration
+    transform: ixt:normalize-space
+    description: "Company name"
   
-  # Экологические показатели
+  # Environmental indicators
   energy_consumption_2025:
-    concept: "gri:EnergyConsumption"
+    concept: "gri:TotalEnergyConsumptionWithinOrganization"
     type: decimal
     contextRef: ctx_2025_duration
     unitRef: unit_pure
     decimals: "2"
     transform: ixt:num-comma-decimal
-    description: "Потребление энергии (в GJ)"
+    description: "Energy consumption (in GJ)"
   
   co2_emissions_2025:
-    concept: "gri:CO2Emissions"
+    concept: "gri:GrossDirectScope1GHGEmissions"
     type: decimal
     contextRef: ctx_2025_duration
     unitRef: unit_pure
     decimals: "2"
     transform: ixt:num-comma-decimal
-    description: "Выбросы CO2 (в тоннах)"
+    description: "CO2 emissions (in tonnes)"

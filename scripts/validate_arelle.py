@@ -17,18 +17,20 @@ from typing import Optional
 def validate_with_arelle(
     instance_path: str,
     output_path: Optional[str] = None,
-    plugins: Optional[list] = None
+    plugins: Optional[list] = None,
+    use_local_taxonomy: bool = True
 ) -> bool:
     """
-    Валидирует XBRL instance с помощью Arelle.
+    Validates XBRL instance with Arelle.
     
     Args:
-        instance_path: Путь к XBRL instance файлу
-        output_path: Путь для сохранения отчета о валидации
-        plugins: Список плагинов Arelle
+        instance_path: Path to XBRL instance file
+        output_path: Path for validation report
+        plugins: List of Arelle plugins
+        use_local_taxonomy: Use local GRI taxonomy cache
         
     Returns:
-        True если валидация успешна, False иначе
+        True if validation successful, False otherwise
     """
     print("=" * 70)
     print("XBRL VALIDATION with Arelle")
@@ -36,7 +38,7 @@ def validate_with_arelle(
     print()
     
     try:
-        # Попытка импортировать Arelle
+        # Try to import Arelle
         try:
             from arelle import Cntlr
             from arelle import ModelManager
@@ -53,19 +55,21 @@ def validate_with_arelle(
             return False
         
         print(f"Instance file: {instance_path}")
+        if use_local_taxonomy:
+            print(f"Using local taxonomy: taxonomy_cache/")
         print()
         
-        # Проверка что файл существует
+        # Check file exists
         if not Path(instance_path).exists():
             print(f"ERROR: File not found: {instance_path}")
             return False
         
         print("Initializing Arelle controller...")
         
-        # Создаем controller
+        # Create controller with logging
         controller = Cntlr.Cntlr(logFileName='logToBuffer')
         
-        # Загружаем модель
+        # Load model
         print("Loading XBRL instance...")
         
         model_xbrl = controller.modelManager.load(instance_path)
@@ -75,21 +79,26 @@ def validate_with_arelle(
             return False
         
         print(f"[OK] Loaded: {model_xbrl.modelDocument.basename}")
+        
+        # Display schema references
+        if model_xbrl.modelDocument.referencesDocument:
+            for ref_doc in model_xbrl.modelDocument.referencesDocument.values():
+                if hasattr(ref_doc, 'targetNamespace'):
+                    print(f"  Schema: {ref_doc.targetNamespace}")
+        
         print()
         
-        # Валидация
+        # Run validation
         print("Running validation...")
         print()
         
-        # Получаем логи
+        from arelle import Validate
         from arelle import XmlValidate
         
-        # Валидируем
-        model_xbrl.modelManager.validateDisclosureSystem = True
-        model_xbrl.modelManager.validateCalcLinkbase = True
-        model_xbrl.modelManager.validateInferDecimals = True
+        # Validate XBRL structure
+        model_xbrl.modelManager.validate()
         
-        # Проверяем ошибки
+        # Collect results
         errors = []
         warnings = []
         info = []
@@ -106,9 +115,8 @@ def validate_with_arelle(
                 print(f"  WARNING: {message}")
             elif level == 'INFO':
                 info.append(message)
-                # print(f"  INFO: {message}")
         
-        # Результаты
+        # Results
         print()
         print("=" * 70)
         print("VALIDATION RESULTS")
@@ -118,7 +126,7 @@ def validate_with_arelle(
         print(f"Info:     {len(info)}")
         print()
         
-        # Сохраняем отчет
+        # Save report
         if output_path:
             with open(output_path, 'w', encoding='utf-8') as f:
                 f.write("=" * 70 + "\n")
@@ -143,10 +151,10 @@ def validate_with_arelle(
             print(f"[OK] Validation report saved to: {output_path}")
             print()
         
-        # Закрываем модель
+        # Close model
         model_xbrl.close()
         
-        # Результат
+        # Result
         if errors:
             print("[FAILED] VALIDATION FAILED")
             print("=" * 70)

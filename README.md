@@ -56,7 +56,12 @@ python -m venv venv
 
 # Install dependencies
 pip install -r requirements.txt
+
+# Extract GRI taxonomy (if you have the zip file)
+python scripts/setup_taxonomy.py
 ```
+
+**Note:** Place `gri-sustainability-taxonomy.zip` in the project root before running setup_taxonomy.py
 
 ## Quick Start
 
@@ -97,6 +102,17 @@ python scripts/validate_arelle.py out/report.xbrl
 - `employees_2025` → Employees 2025 → `250`
 - `report_date` → Report Date → `31.12.2025`
 
+## GRI Taxonomy Integration
+
+This project uses the **official GRI Sustainability Taxonomy** for XBRL generation. Real GRI concepts are used for validation.
+
+**Supported Concepts:**
+- `gri:RevenuesGeneratedFromDirectEconomicValue` - Revenue
+- `gri:EconomicValueDistributed` - Operating costs
+- `gri:TotalNumberOfEmployees` - Employee count
+- `gri:TotalEnergyConsumptionWithinOrganization` - Energy
+- `gri:GrossDirectScope1GHGEmissions` - CO2 emissions
+
 ## Configuration
 
 ### facts.yml - Fact Mapping
@@ -105,7 +121,7 @@ Maps factId to XBRL concept with metadata:
 
 ```yaml
 revenue_2025:
-  concept: "gri:EconomicPerformanceRevenue"
+  concept: "gri:RevenuesGeneratedFromDirectEconomicValue"
   type: monetary
   contextRef: ctx_2025_duration
   unitRef: unit_EUR

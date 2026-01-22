@@ -75,7 +75,7 @@ class XBRLEmitter:
         return root
     
     def _add_schema_ref(self, root: etree.Element):
-        """Добавляет link:schemaRef."""
+        """Adds link:schemaRef."""
         link_ns = self.namespaces['link']
         xlink_ns = self.namespaces['xlink']
         
@@ -84,9 +84,21 @@ class XBRLEmitter:
             f'{{{link_ns}}}schemaRef',
         )
         schema_ref.set(f'{{{xlink_ns}}}type', 'simple')
-        schema_ref.set(f'{{{xlink_ns}}}href', self.entrypoint['href'])
+        
+        # Convert relative path to absolute for Arelle compatibility
+        schema_href = self.entrypoint['href']
+        if not schema_href.startswith('http'):
+            from pathlib import Path
+            import os
+            # Get absolute path
+            abs_path = Path(schema_href).resolve()
+            # Convert to URI format for Windows
+            schema_href = abs_path.as_uri()
+        
+        schema_ref.set(f'{{{xlink_ns}}}href', schema_href)
         
         print(f"  [OK] Added schemaRef: {self.entrypoint['href']}")
+        print(f"      Resolved to: {schema_href}")
     
     def _add_contexts(self, root: etree.Element):
         """Добавляет все xbrli:context элементы."""

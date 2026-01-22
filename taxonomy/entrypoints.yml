@@ -7,10 +7,9 @@ taxonomy:
   description: "Упрощенная версия GRI taxonomy для тестирования DOCX→XBRL pipeline"
   
 entrypoint:
-  # В реальном проекте это будет ссылка на реальный taxonomy schema
-  # Например: http://www.globalreporting.org/taxonomy/2023-01-01/gri.xsd
-  href: "http://www.example.com/taxonomy/gri-simplified-2025.xsd"
-  namespace: "http://www.globalreporting.org/taxonomy/2025-01-01"
+  # Local GRI taxonomy (extracted from gri-sustainability-taxonomy.zip)
+  href: "taxonomy_cache/gri-sustainability-taxonomy/gri_srs/gri_srs_entry_point_2025-06-23.xsd"
+  namespace: "https://taxonomy.globalreporting.org/gri-sustainability-taxonomy/gri_srs/core"
   prefix: "gri"
   
 # Для тестирования используем упрощенную версию
@@ -22,7 +21,7 @@ namespaces:
   link: "http://www.xbrl.org/2003/linkbase"
   xlink: "http://www.w3.org/1999/xlink"
   iso4217: "http://www.xbrl.org/2003/iso4217"
-  gri: "http://www.globalreporting.org/taxonomy/2025-01-01"
+  gri: "https://taxonomy.globalreporting.org/gri-sustainability-taxonomy/gri_srs/core"
   
 # Минимальный набор концептов для тестирования
 concepts:
