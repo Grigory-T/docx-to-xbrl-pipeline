@@ -1,0 +1,16 @@
+# DOCX to XBRL Pipeline Dependencies
+
+# XML/DOCX parsing
+lxml>=4.9.0
+
+# YAML configuration
+PyYAML>=6.0
+
+# XBRL validation and processing
+arelle-release>=2.30.3
+
+# DOCX creation (only for test DOCX generation)
+python-docx>=1.1.0
+
+# Optional: JSON pretty-printing (included in Python stdlib)
+# json is part of standard library

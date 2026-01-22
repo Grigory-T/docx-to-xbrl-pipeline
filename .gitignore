@@ -15,8 +15,10 @@ ENV/
 # Output files
 out/
 *.xbrl
-*.json
-*.txt
+
+# Keep requirements.txt but ignore other generated txt/json
+out/*.json
+out/*.txt
 
 # IDE
 .vscode/
