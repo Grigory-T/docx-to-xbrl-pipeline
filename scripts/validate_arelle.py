@@ -9,9 +9,11 @@ Usage:
 """
 
 import argparse
+import subprocess
 import sys
 from pathlib import Path
 from typing import Optional
+import shutil
 
 
 def validate_with_arelle(
@@ -38,85 +40,60 @@ def validate_with_arelle(
     print()
     
     try:
-        # Try to import Arelle
-        try:
-            from arelle import Cntlr
-            from arelle import ModelManager
-            from arelle import FileSource
-        except ImportError:
-            print("ERROR: Arelle not installed")
+        # Try to locate arelleCmdLine CLI
+        arelle_cmd = shutil.which("arelleCmdLine")
+        if not arelle_cmd:
+            candidate = Path(sys.executable).parent / "arelleCmdLine"
+            if candidate.exists():
+                arelle_cmd = str(candidate)
+        if not arelle_cmd:
+            print("ERROR: Arelle CLI not found")
             print()
-            print("Install Arelle:")
+            print("Install Arelle and ensure `arelleCmdLine` is on PATH:")
             print("  pip install arelle-release")
             print()
-            print("Or run validation manually:")
+            print(f"Or run validation manually once installed:")
             print(f"  arelleCmdLine --file {instance_path} --validate")
-            print()
             return False
-        
-        print(f"Instance file: {instance_path}")
+
+        instance_path = str(Path(instance_path))
+        instance_abs = Path(instance_path).resolve()
+        print(f"Instance file: {instance_abs}")
         if use_local_taxonomy:
             print(f"Using local taxonomy: taxonomy_cache/")
         print()
-        
+
         # Check file exists
-        if not Path(instance_path).exists():
-            print(f"ERROR: File not found: {instance_path}")
+        if not instance_abs.exists():
+            print(f"ERROR: File not found: {instance_abs}")
             return False
-        
-        print("Initializing Arelle controller...")
-        
-        # Create controller with logging
-        controller = Cntlr.Cntlr(logFileName='logToBuffer')
-        
-        # Load model
-        print("Loading XBRL instance...")
-        
-        model_xbrl = controller.modelManager.load(instance_path)
-        
-        if not model_xbrl:
-            print("ERROR: Failed to load XBRL instance")
-            return False
-        
-        print(f"[OK] Loaded: {model_xbrl.modelDocument.basename}")
-        
-        # Display schema references
-        if model_xbrl.modelDocument.referencesDocument:
-            for ref_doc in model_xbrl.modelDocument.referencesDocument.values():
-                if hasattr(ref_doc, 'targetNamespace'):
-                    print(f"  Schema: {ref_doc.targetNamespace}")
-        
-        print()
-        
-        # Run validation
-        print("Running validation...")
-        print()
-        
-        from arelle import Validate
-        from arelle import XmlValidate
-        
-        # Validate XBRL structure
-        model_xbrl.modelManager.validate()
-        
-        # Collect results
+
+        # Run Arelle CLI
+        cmd = [arelle_cmd, "--file", str(instance_abs), "--validate"]
+        print(f"Running: {' '.join(cmd)}")
+        proc = subprocess.run(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True
+        )
+        output = proc.stdout or ""
+        print(output)
+
         errors = []
         warnings = []
         info = []
-        
-        for log_entry in controller.logHandler.logRecordBuffer:
-            level = log_entry.levelname
-            message = log_entry.getMessage()
-            
-            if level == 'ERROR' or level == 'CRITICAL':
-                errors.append(message)
-                print(f"  ERROR: {message}")
-            elif level == 'WARNING':
-                warnings.append(message)
-                print(f"  WARNING: {message}")
-            elif level == 'INFO':
-                info.append(message)
-        
-        # Results
+        for line in output.splitlines():
+            line = line.strip()
+            if line.startswith("[error]") or line.startswith("[fatal]"):
+                errors.append(line)
+            elif line.startswith("[warning]"):
+                warnings.append(line)
+            elif line.startswith("[info]"):
+                info.append(line)
+            elif line.startswith("[message:"):
+                warnings.append(line)
+
         print()
         print("=" * 70)
         print("VALIDATION RESULTS")
@@ -125,45 +102,26 @@ def validate_with_arelle(
         print(f"Warnings: {len(warnings)}")
         print(f"Info:     {len(info)}")
         print()
-        
-        # Save report
+
         if output_path:
             with open(output_path, 'w', encoding='utf-8') as f:
                 f.write("=" * 70 + "\n")
                 f.write("XBRL VALIDATION REPORT\n")
                 f.write("=" * 70 + "\n\n")
                 f.write(f"Instance: {instance_path}\n\n")
-                
-                f.write(f"Errors: {len(errors)}\n")
-                for error in errors:
-                    f.write(f"  - {error}\n")
-                f.write("\n")
-                
-                f.write(f"Warnings: {len(warnings)}\n")
-                for warning in warnings:
-                    f.write(f"  - {warning}\n")
-                f.write("\n")
-                
-                f.write(f"Info: {len(info)}\n")
-                for i in info:
-                    f.write(f"  - {i}\n")
-            
+                f.write(output)
             print(f"[OK] Validation report saved to: {output_path}")
             print()
-        
-        # Close model
-        model_xbrl.close()
-        
-        # Result
-        if errors:
-            print("[FAILED] VALIDATION FAILED")
-            print("=" * 70)
-            return False
-        else:
+
+        success = proc.returncode == 0 and not errors
+        if success:
             print("[PASSED] VALIDATION PASSED")
             print("=" * 70)
             return True
-            
+        else:
+            print("[FAILED] VALIDATION FAILED")
+            print("=" * 70)
+            return False
     except Exception as e:
         print(f"ERROR: Validation failed with exception: {e}")
         import traceback

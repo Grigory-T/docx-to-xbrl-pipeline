@@ -7,7 +7,7 @@ taxonomy:
   description: "Упрощенная версия GRI taxonomy для тестирования DOCX→XBRL pipeline"
   
 entrypoint:
-  # Local GRI taxonomy (extracted from gri-sustainability-taxonomy.zip)
+  # Local GRI taxonomy (unzipped from gri-sustainability-taxonomy.zip)
   href: "taxonomy_cache/gri-sustainability-taxonomy/gri_srs/gri_srs_entry_point_2025-06-23.xsd"
   namespace: "https://taxonomy.globalreporting.org/gri-sustainability-taxonomy/gri_srs/core"
   prefix: "gri"
